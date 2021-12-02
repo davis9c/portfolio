@@ -1,0 +1,27 @@
+{
+    "nama":"Davis Aji",
+    "aboutme":["Text1","Text2"],
+    "contact":{
+        "sosmed":[
+            [
+                true,
+                "instagram",
+                "https://www.instagram.com/davis9c/",
+                "@davis9c"
+            ],
+            [
+                true,
+                "facebook",
+                "https://www.facebook.com/davis9c/",
+                "Davis Aji"
+            ],
+            [
+                true,
+                "youtube",
+                "https://www.instagram.com/davis9c/",
+                "Davis Aji"
+            ]
+        ],
+        "mailto":"davispurwo@gmail.com"
+    }
+}
