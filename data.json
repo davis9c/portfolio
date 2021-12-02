@@ -1,4 +1,7 @@
-[{
-    "nama":"agus",
-    "umur":"21"
-}]
+[
+    {
+        "nama": "agus",
+        "umur": "21",
+        "genre": "pria"
+    }
+]a
