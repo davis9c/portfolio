@@ -85,8 +85,8 @@
                 width="200"
                 class="rounded-circle img-thumbnail"
             />
-            <h1 class="display-4">Davis Aji</h1>
-            <p class="lead">Leader | Staff Technical</p>
+            <h1 class="display-4" id="data_nama"></h1>
+            <p class="lead" id="data_kilas"></p>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
                 <path
                     fill="#ffffff"
@@ -106,21 +106,11 @@
                 </div>
                 <div class="row justify-content-center fs-5 text-center">
                     <div class="col-md-5">
-                        <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Deleniti voluptas laboriosam eveniet dicta
-                            consequatur blanditiis, ex, odit odio quia laborum
-                            at placeat, numquam accusamus ea illum corporis
-                            tempora architecto commodi?
+                        <p id="data_about1">
                         </p>
                     </div>
                     <div class="col-md-5">
-                        <p>
-                            Lorem ipsum dolor, sit amet consectetur adipisicing
-                            elit. Nisi odio dicta cum, eum ratione officia
-                            aliquid rem error dignissimos sit amet architecto
-                            fuga harum. Rem deleniti aliquid amet nulla quam.
-                        </p>
+                        <p id="data_about2"></p>
                     </div>
                 </div>
             </div>
@@ -240,40 +230,7 @@
                 <div class="row text-center mb-3">
                     <div class="col"><h2>Contact Me</h2></div>
                 </div>
-                <div class="row justify-content-center">
-                    <div class="col-md-3">
-                        <a
-                            href="https://www.youtube.com/channel/UCMTLARN092bNF8VMwzew9xg"
-                            class="btn btn-link"
-                            target="blank_"
-                            ><p><i class="bi bi-youtube"></i> Davis Aji</p></a
-                        >
-                    </div>
-                    <div class="col-md-3">
-                        <a
-                            href="https://www.instagram.com/davis9c/"
-                            target="blank_"
-                            ><i class="bi bi-instagram"></i> @davis9c</a
-                        >
-                    </div>
-                    <div class="col-md-3">
-                        <a
-                            href="https://www.facebook.com/davis9c/"
-                            target="blank_"
-                            ><i class="bi bi-facebook"></i> @davis9c</a
-                        >
-                    </div>
-                    <div class="col-md-3">
-                        <a href="https://wa.me/6281259933757" target="blank_"
-                            ><i class="bi bi-whatsapp"></i> Davis Aji</a
-                        >
-                    </div>
-                    <div class="col-md-3">
-                        <a href="mailto://dvisboy@Gmail.com" target="blank_"
-                            ><i class="bi bi-google"></i> Davis Aji</a
-                        >
-                    </div>
-                </div>
+                <div id="data_sosmedList" class="row justify-content-center"></div>
                 <div class="row justify-content-center">
                     <div class="col-8">
                         <form>
@@ -354,13 +311,22 @@
         ></script>
         <script type="text/javascript">
             $(document).ready(function () {
-                fetch("data.json")
+                fetch("portfolio.json")
                     .then((response) => response.json())
                     .then((data) => {
+                        $("#data_nama").text(data.nama);
+                        $("#data_kilas").text(data.kilas);
+                        $("#data_about1").text(data.aboutme[0]);
+                        $("#data_about2").text(data.aboutme[1]);
+                        var html = "";
+                        data.contact.sosmed.forEach(element => {
+                            console.log(element[1]);
+                            $("#data_sosmedList").append(`<div class="col-md"><a href="`+element[2]+`" class="btn btn-link" target="blank_" ><p><i class="bi bi-`+element[1]+`"></i> Davis Aji</p></a></div>`);
+                            
+                        });
                         console.log(data);
                     });
             });
         </script>
-        <!--<script type="text/javascript" src="portfolio.json"></script>-->
     </body>
 </html>

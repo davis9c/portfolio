@@ -1,8 +1,12 @@
 {
-    "nama":"Davis Aji",
-    "aboutme":["Text1","Text2"],
-    "contact":{
-        "sosmed":[
+    "nama": "Davis Purwo Aji",
+    "kilas": "Leader | Staff Technical",
+    "aboutme": [
+        "Text1",
+        "Text2"
+    ],
+    "contact": {
+        "sosmed": [
             [
                 true,
                 "instagram",
@@ -17,11 +21,29 @@
             ],
             [
                 true,
+                "whatsapp",
+                "https://wa.me/6281259933757",
+                "Davis Aji"
+            ],
+            [
+                true,
+                "tiktok",
+                "https://www.tiktok.com/davis9c/",
+                "Davis Aji"
+            ],
+            [
+                true,
+                "envelope",
+                "mailto:davispurwo@gmail.com",
+                "Davis Purwo"
+            ],
+            [
+                true,
                 "youtube",
-                "https://www.instagram.com/davis9c/",
+                "https://www.youtube.com/channel/UCMTLARN092bNF8VMwzew9xg",
                 "Davis Aji"
             ]
         ],
-        "mailto":"davispurwo@gmail.com"
+        "mailto": "davispurwo@gmail.com"
     }
 }
