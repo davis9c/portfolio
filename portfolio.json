@@ -1,6 +1,6 @@
 {
     "nama": "Davis Purwo Aji",
-    "kilas": "Staff IT | DevOps | Production Support(OP+)",
+    "kilas": "Production Support(OP+)",
     "aboutme": [
         "Mudah Beradaptasi dengan lingkungan, suka bekerja didalam tim atau kelompok dan mampu bekerjasama",
         "Menguasai ilmu kompuer, jaringan dan teknologi."
@@ -22,7 +22,7 @@
             [
                 true,
                 "whatsapp",
-                "https://wa.me/6281259933757",
+                "https://wa.me/6285800553311",
                 "Davis Aji"
             ],
             [
@@ -34,7 +34,7 @@
             [
                 true,
                 "envelope",
-                "mailto:davispurwo@gmail.com",
+                "mailto:dvisboy@gmail.com",
                 "Davis Purwo"
             ],
             [
@@ -44,6 +44,6 @@
                 "Davis Aji"
             ]
         ],
-        "mailto": "davispurwo@gmail.com"
+        "mailto": "dvisboy@gmail.com"
     }
 }
