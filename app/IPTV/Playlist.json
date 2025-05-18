@@ -27,6 +27,22 @@
   ],
   "channels": [
     {
+      "tvg-id": "Trans7.id",
+      "tvg-logo": "https://i.imgur.com/fAbGImS.png",
+      "group-title": "General",
+      "name": "Trans7",
+      "resolution": "720p",
+      "url": "https://video.detik.com/trans7/smil:trans7.smil/playlist.m3u8"
+    },
+    {
+      "tvg-id": "TransTV.id",
+      "tvg-logo": "https://upload.wikimedia.org/wikipedia/en/thumb/6/62/Trans_TV_2013.svg/512px-Trans_TV_2013.svg.png",
+      "group-title": "General",
+      "name": "Trans TV",
+      "resolution": "720p",
+      "url": "https://video.detik.com/transtv/smil:transtv.smil/playlist.m3u8"
+    },
+    {
       "tvg-id": "ADiTV.id",
       "tvg-logo": "https://upload.wikimedia.org/wikipedia/id/5/59/ADiTV_Jogja.png",
       "group-title": "Undefined",
