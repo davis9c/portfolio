@@ -157,19 +157,6 @@
                     </video>
                 </div>
                 <div class="playlist-section w-100">
-                    <div class="mb-3">
-                        <label for="playlistInput" class="form-label"
-                            >Playlist:
-                            <span class="text-success">Playlist.json</span>
-                            (default) atau pilih file sendiri:</label
-                        >
-                        <input
-                            type="file"
-                            id="playlistInput"
-                            accept=".json"
-                            class="form-control"
-                        />
-                    </div>
                     <div>
                         <table
                             id="playlistTable"
@@ -187,8 +174,7 @@
                         </table>
                     </div>
                     <p class="text-secondary small mt-3">
-                        Playlist loaded from <b>Playlist.json</b> atau file yang
-                        dipilih.
+                        Playlist loaded from <b>Playlist.json</b>.
                     </p>
                 </div>
             </div>
@@ -298,27 +284,6 @@
                         encodeURIComponent(allChannels[0].logo),
                     );
             }
-
-            // File picker event
-            document
-                .getElementById("playlistInput")
-                .addEventListener("change", function (e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    const reader = new FileReader();
-                    reader.onload = function (ev) {
-                        try {
-                            const data = JSON.parse(ev.target.result);
-                            loadChannels(data);
-                        } catch (err) {
-                            document.getElementById(
-                                "playlistBody",
-                            ).innerHTML = `<tr><td colspan="2" class="text-danger text-center">File JSON tidak valid</td></tr>`;
-                            if (dataTable) dataTable.clear().destroy();
-                        }
-                    };
-                    reader.readAsText(file);
-                });
 
             // Fetch Playlist.json on load (default)
             fetch("Playlist.json")
