@@ -192,6 +192,7 @@
         <script>
             let allChannels = [];
             let dataTable;
+            let player; // Simpan instance videojs global
 
             function renderPlaylist(channels) {
                 const tbody = document.getElementById("playlistBody");
@@ -264,10 +265,18 @@
             window.playChannel = function (url, logo) {
                 url = decodeURIComponent(url);
                 logo = decodeURIComponent(logo);
-                const player = videojs("video");
+
+                if (!player) {
+                    player = videojs("video");
+                }
+                player.pause();
                 player.src({ src: url, type: "application/x-mpegURL" });
                 if (logo) player.poster(logo);
-                player.play();
+
+                // Tunggu sampai player siap sebelum play
+                player.ready(function () {
+                    player.play();
+                });
             };
 
             function loadChannels(data) {
@@ -284,6 +293,11 @@
                         encodeURIComponent(allChannels[0].logo),
                     );
             }
+
+            // Inisialisasi player saat DOM siap
+            document.addEventListener("DOMContentLoaded", function () {
+                player = videojs("video");
+            });
 
             // Fetch Playlist.json on load (default)
             fetch("Playlist.json")
