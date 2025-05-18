@@ -192,7 +192,7 @@
         <script>
             let allChannels = [];
             let dataTable;
-            let player; // Simpan instance videojs global
+            let player;
 
             function renderPlaylist(channels) {
                 const tbody = document.getElementById("playlistBody");
@@ -273,7 +273,6 @@
                 player.src({ src: url, type: "application/x-mpegURL" });
                 if (logo) player.poster(logo);
 
-                // Tunggu sampai player siap sebelum play
                 player.ready(function () {
                     player.play();
                 });
@@ -297,6 +296,32 @@
             // Inisialisasi player saat DOM siap
             document.addEventListener("DOMContentLoaded", function () {
                 player = videojs("video");
+
+                // Tambahkan handler error
+                player.on("error", function () {
+                    const error = player.error();
+                    let msg = "Gagal memutar stream.";
+                    if (error && error.code === 4) {
+                        msg =
+                            "Stream tidak dapat diputar (format tidak didukung atau server bermasalah).";
+                    }
+                    // Tampilkan pesan error di bawah player
+                    let errBox = document.getElementById("player-error-msg");
+                    if (!errBox) {
+                        errBox = document.createElement("div");
+                        errBox.id = "player-error-msg";
+                        errBox.className =
+                            "alert alert-danger mt-3 text-center";
+                        player.el().parentNode.appendChild(errBox);
+                    }
+                    errBox.textContent = msg;
+                });
+
+                // Hapus pesan error jika play berhasil
+                player.on("playing", function () {
+                    const errBox = document.getElementById("player-error-msg");
+                    if (errBox) errBox.remove();
+                });
             });
 
             // Fetch Playlist.json on load (default)
