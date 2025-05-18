@@ -44,7 +44,7 @@
             .player-playlist-container {
                 display: flex;
                 flex-direction: column;
-                gap: 2rem;
+                gap: 1rem; /* ubah jarak di sini */
             }
             /* Landscape: video kiri, daftar kanan */
             @media (orientation: landscape) and (min-width: 600px) {
@@ -52,19 +52,18 @@
                     flex-direction: row;
                     align-items: flex-start;
                 }
-                .player-section,
-                .playlist-section {
-                    flex: 1 1 0;
-                }
                 .player-section {
-                    max-width: 55%;
+                    flex: 0 0 70%;
+                    max-width: 70%;
                 }
                 .playlist-section {
-                    max-width: 45%;
+                    flex: 0 0 30%;
+                    max-width: 30%;
+                    padding-right: 12px;
                 }
             }
             /* Potrait: video atas, daftar bawah */
-            @media (orientation: portrait), (max-width: 600px) {
+            @media (orientation: portrait), (max-width: auto) {
                 .player-playlist-container {
                     flex-direction: column;
                 }
@@ -74,10 +73,69 @@
                     max-width: 100%;
                 }
             }
+            .player-section video {
+                width: 100% !important;
+                height: auto !important;
+                max-width: 100%;
+                display: block;
+                margin: 0 auto;
+            }
+            .main-iptv-container {
+                max-width: 1100px;
+                margin-left: auto;
+                margin-right: auto;
+                padding-left: 32px;
+                padding-right: 32px;
+            }
+            @media (max-width: 1200px) {
+                .main-iptv-container {
+                    max-width: 98vw;
+                    padding-left: 12px;
+                    padding-right: 12px;
+                }
+            }
         </style>
     </head>
     <body>
-        <div class="container my-4 p-4 rounded-3 bg-dark shadow-lg">
+        <!-- Navbar Start -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#">IPTV Player</a>
+                <button
+                    class="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarNav"
+                    aria-controls="navbarNav"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation"
+                >
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="btn btn-light me-2" href="../index.html"
+                                >Home</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-light me-2" href="#"
+                                >Playlist</a
+                            >
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-success" href="#">About</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Navbar End -->
+
+        <div
+            class="container my-4 p-4 rounded-3 bg-dark shadow-lg main-iptv-container"
+        >
             <h1 class="mb-4 text-center">IPTV Player</h1>
 
             <div class="player-playlist-container">
@@ -120,7 +178,6 @@
                                 <tr>
                                     <th>Logo</th>
                                     <th>Nama Channel</th>
-                                    <th>Group</th>
                                 </tr>
                             </thead>
                             <tbody id="playlistBody">
@@ -153,7 +210,7 @@
                 const tbody = document.getElementById("playlistBody");
                 tbody.innerHTML = "";
                 if (channels.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-secondary">Channel tidak ditemukan</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="2" class="text-center text-secondary">Channel tidak ditemukan</td></tr>`;
                 } else {
                     channels.forEach((ch, idx) => {
                         const tr = document.createElement("tr");
@@ -165,7 +222,6 @@
                             <td class="channel-title" style="cursor:pointer;color:#0d6efd;text-decoration:underline">${
                                 ch.title || ch.url
                             }</td>
-                            <td>${ch.group || ""}</td>
                         `;
                         // Play channel on click of channel name
                         tr.querySelector(".channel-title").onclick = () => {
@@ -189,7 +245,32 @@
                     pageLength: 10,
                     order: [],
                     autoWidth: false,
+                    // columnDefs: [] // Tidak perlu columnDefs jika hanya 2 kolom
+                    dom: '<"datatable-search-wrapper d-flex justify-content-center align-items-center mb-3"f>rt<"bottom"ip>',
+                    language: {
+                        search: "",
+                        searchPlaceholder: "Cari channel...",
+                    },
                 });
+
+                // Custom: Center the search label and input, and put label inside input
+                $(".datatable-search-wrapper")
+                    .find("label")
+                    .addClass(
+                        "w-100 d-flex justify-content-center align-items-center mb-0",
+                    );
+                $(".datatable-search-wrapper")
+                    .find('input[type="search"]')
+                    .addClass("form-control w-auto mx-2 text-center")
+                    .attr("placeholder", "Cari channel...");
+
+                // Remove default label text (so only input appears centered)
+                $(".datatable-search-wrapper label")
+                    .contents()
+                    .filter(function () {
+                        return this.nodeType === 3;
+                    })
+                    .remove();
             }
 
             // Expose playChannel globally for inline onclick
@@ -231,7 +312,7 @@
                         } catch (err) {
                             document.getElementById(
                                 "playlistBody",
-                            ).innerHTML = `<tr><td colspan="3" class="text-danger text-center">File JSON tidak valid</td></tr>`;
+                            ).innerHTML = `<tr><td colspan="2" class="text-danger text-center">File JSON tidak valid</td></tr>`;
                             if (dataTable) dataTable.clear().destroy();
                         }
                     };
@@ -270,7 +351,7 @@
                         .getElementById("playlistBody")
                         .insertAdjacentHTML(
                             "beforeend",
-                            `<tr><td colspan="3" class="text-warning text-center">Playlist.json tidak ditemukan, menggunakan siaran default.</td></tr>`,
+                            `<tr><td colspan="2" class="text-warning text-center">Playlist.json tidak ditemukan, menggunakan siaran default.</td></tr>`,
                         );
                 });
         </script>
