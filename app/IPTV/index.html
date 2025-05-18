@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>IPTV Player</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <!-- Bootstrap CSS -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+        <!-- DataTables CSS -->
+        <link
+            href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css"
+            rel="stylesheet"
+        />
+        <!-- Video.js CSS -->
+        <link
+            href="https://vjs.zencdn.net/8.10.0/video-js.css"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                background: #181818;
+                color: #fff;
+            }
+            .video-js {
+                border-radius: 8px;
+            }
+            .channel-logo {
+                width: 48px;
+                height: 48px;
+                object-fit: contain;
+                background: #fff;
+                border-radius: 4px;
+            }
+            @media (max-width: 600px) {
+                .channel-logo {
+                    width: 32px;
+                    height: 32px;
+                }
+            }
+            /* Flex container for video and playlist */
+            .player-playlist-container {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+            /* Landscape: video kiri, daftar kanan */
+            @media (orientation: landscape) and (min-width: 600px) {
+                .player-playlist-container {
+                    flex-direction: row;
+                    align-items: flex-start;
+                }
+                .player-section,
+                .playlist-section {
+                    flex: 1 1 0;
+                }
+                .player-section {
+                    max-width: 55%;
+                }
+                .playlist-section {
+                    max-width: 45%;
+                }
+            }
+            /* Potrait: video atas, daftar bawah */
+            @media (orientation: portrait), (max-width: 600px) {
+                .player-playlist-container {
+                    flex-direction: column;
+                }
+                .player-section,
+                .playlist-section {
+                    width: 100%;
+                    max-width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container my-4 p-4 rounded-3 bg-dark shadow-lg">
+            <h1 class="mb-4 text-center">IPTV Player</h1>
+
+            <div class="player-playlist-container">
+                <div
+                    class="player-section mb-4 d-flex justify-content-center align-items-center"
+                >
+                    <video
+                        id="video"
+                        class="video-js vjs-default-skin"
+                        controls
+                        preload="auto"
+                        width="auto"
+                        height="auto"
+                        poster=""
+                        data-setup="{}"
+                    >
+                        <source src="" type="application/x-mpegURL" />
+                    </video>
+                </div>
+                <div class="playlist-section w-100">
+                    <div class="mb-3">
+                        <label for="playlistInput" class="form-label"
+                            >Playlist:
+                            <span class="text-success">Playlist.json</span>
+                            (default) atau pilih file sendiri:</label
+                        >
+                        <input
+                            type="file"
+                            id="playlistInput"
+                            accept=".json"
+                            class="form-control"
+                        />
+                    </div>
+                    <div>
+                        <table
+                            id="playlistTable"
+                            class="table table-striped table-dark table-hover align-middle w-100"
+                        >
+                            <thead>
+                                <tr>
+                                    <th>Logo</th>
+                                    <th>Nama Channel</th>
+                                    <th>Group</th>
+                                </tr>
+                            </thead>
+                            <tbody id="playlistBody">
+                                <!-- Channel rows will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-secondary small mt-3">
+                        Playlist loaded from <b>Playlist.json</b> atau file yang
+                        dipilih.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- jQuery (required for DataTables) -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <!-- DataTables JS -->
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+        <!-- Video.js -->
+        <script src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+        <script>
+            let allChannels = [];
+            let dataTable;
+
+            function renderPlaylist(channels) {
+                const tbody = document.getElementById("playlistBody");
+                tbody.innerHTML = "";
+                if (channels.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" class="text-center text-secondary">Channel tidak ditemukan</td></tr>`;
+                } else {
+                    channels.forEach((ch, idx) => {
+                        const tr = document.createElement("tr");
+                        tr.innerHTML = `
+                            <td><img class="channel-logo" src="${
+                                ch.logo ||
+                                "https://via.placeholder.com/48?text=TV"
+                            }" alt=""></td>
+                            <td class="channel-title" style="cursor:pointer;color:#0d6efd;text-decoration:underline">${
+                                ch.title || ch.url
+                            }</td>
+                            <td>${ch.group || ""}</td>
+                        `;
+                        // Play channel on click of channel name
+                        tr.querySelector(".channel-title").onclick = () => {
+                            playChannel(
+                                encodeURIComponent(ch.url),
+                                encodeURIComponent(ch.logo || ""),
+                            );
+                        };
+                        tbody.appendChild(tr);
+                    });
+                }
+                // Re-initialize DataTable
+                if (dataTable) {
+                    dataTable.clear().destroy();
+                }
+                dataTable = $("#playlistTable").DataTable({
+                    paging: true,
+                    searching: true,
+                    info: false,
+                    lengthChange: false,
+                    pageLength: 10,
+                    order: [],
+                    autoWidth: false,
+                });
+            }
+
+            // Expose playChannel globally for inline onclick
+            window.playChannel = function (url, logo) {
+                url = decodeURIComponent(url);
+                logo = decodeURIComponent(logo);
+                const player = videojs("video");
+                player.src({ src: url, type: "application/x-mpegURL" });
+                if (logo) player.poster(logo);
+                player.play();
+            };
+
+            function loadChannels(data) {
+                allChannels = (data.channels || []).map((ch) => ({
+                    title: ch.name || ch.title || ch.url,
+                    logo: ch["tvg-logo"] || ch.logo || "",
+                    group: ch["group-title"] || ch.group || "",
+                    url: ch.url,
+                }));
+                renderPlaylist(allChannels);
+                if (allChannels.length > 0)
+                    playChannel(
+                        encodeURIComponent(allChannels[0].url),
+                        encodeURIComponent(allChannels[0].logo),
+                    );
+            }
+
+            // File picker event
+            document
+                .getElementById("playlistInput")
+                .addEventListener("change", function (e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        try {
+                            const data = JSON.parse(ev.target.result);
+                            loadChannels(data);
+                        } catch (err) {
+                            document.getElementById(
+                                "playlistBody",
+                            ).innerHTML = `<tr><td colspan="3" class="text-danger text-center">File JSON tidak valid</td></tr>`;
+                            if (dataTable) dataTable.clear().destroy();
+                        }
+                    };
+                    reader.readAsText(file);
+                });
+
+            // Fetch Playlist.json on load (default)
+            fetch("Playlist.json")
+                .then((res) => res.json())
+                .then((data) => {
+                    loadChannels(data);
+                })
+                .catch((err) => {
+                    // Jika gagal, gunakan playlist default
+                    const defaultChannels = {
+                        channels: [
+                            {
+                                "tvg-id": "Trans7.id",
+                                "tvg-logo": "https://i.imgur.com/fAbGImS.png",
+                                "group-title": "General",
+                                name: "Trans7 (720p)",
+                                url: "https://video.detik.com/trans7/smil:trans7.smil/playlist.m3u8",
+                            },
+                            {
+                                "tvg-id": "TransTV.id",
+                                "tvg-logo":
+                                    "https://upload.wikimedia.org/wikipedia/en/thumb/6/62/Trans_TV_2013.svg/512px-Trans_TV_2013.svg.png",
+                                "group-title": "General",
+                                name: "Trans TV (720p)",
+                                url: "https://video.detik.com/transtv/smil:transtv.smil/playlist.m3u8",
+                            },
+                        ],
+                    };
+                    loadChannels(defaultChannels);
+                    document
+                        .getElementById("playlistBody")
+                        .insertAdjacentHTML(
+                            "beforeend",
+                            `<tr><td colspan="3" class="text-warning text-center">Playlist.json tidak ditemukan, menggunakan siaran default.</td></tr>`,
+                        );
+                });
+        </script>
+    </body>
+</html>
